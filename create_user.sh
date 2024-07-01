@@ -1,39 +1,48 @@
 #!/bin/bash
 
 #  if the script is run with a filename arguement
- if [ $# -ne 1 ]; then
-    echo "Usage: $0 <filename>"
-    exit 1
+file_name=$1
+ if [ -f "$file_name" ]; 
+ then
+    echo "Using $file_name to create user"
+    
+
+
+
+
+
+else
+    echo "Provide file name"
 fi
 
 # Read the input file line by line
-while IFS=';' read -r username groups; do
-    # Remove leading and trailing whitespaces
-    username=$(echo "$username" | tr -d '[':space:']')
-    groups=$(echo "$groups" | tr -d '[:space:]')
+# while IFS=';' read -r username groups; do
+#     # Remove leading and trailing whitespaces
+#     username=$(echo "$username" | tr -d '[':space:']')
+#     groups=$(echo "$groups" | tr -d '[:space:]')
 
-    # Create groups if they don't exist
-    IFS=',' read -ra group_array <<< "$group"
-    for group in "${group_array[@]}"; do 
-        if ! grep -q "^$group:" /etc/group; then
-            sudo groupadd "$group"
-        fi
-    done
+#     # Create groups if they don't exist
+#     IFS=',' read -ra group_array <<< "$group"
+#     for group in "${group_array[@]}"; do 
+#         if ! grep -q "^$group:" /etc/group; then
+#             sudo groupadd "$group"
+#         fi
+#     done
 
-    # Create user with specified groups
-    sudo useradd -m -s /bin/bash -G "$group" "$username"
+#     # Create user with specified groups
+#     sudo useradd -m -s /bin/bash -G "$group" "$username"
 
-    # Set password for the user 
-    echo "$username:$password" | sudo chpasswd
+#     # Set password for the user 
+#     echo "$username:$password" | sudo chpasswd
 
-    # Log actions
-    echo "$(date) - User $username created with $groups" >> /var/log/user_management.log
+#     # Log actions
+#     echo "$(date) - User $username created with $groups" >> /var/log/user_management.log
 
-    # Securely store passwords
-    echo "$username:$password" >> /var/secure/user_passwords.csv
+#     # Securely store passwords
+#     echo "$username:$password" >> /var/secure/user_passwords.csv
 
-    # Set permission for home directory
-    sudo chmod 700 "/home/$username"
-    sudo chown -R "$username:$username" "/home/$username"
+#     # Set permission for home directory
+#     sudo chmod 700 "/home/$username"
+#     sudo chown -R "$username:$username" "/home/$username"
 
-done < "$1"
+# done < "$1"
