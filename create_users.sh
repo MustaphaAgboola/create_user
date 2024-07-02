@@ -29,6 +29,7 @@ while IFS=";" read -r username groups; do
 # Check if user exist, then create group
         if ! grep -q "^$username:" /etc/passwd; then
                 sudo useradd -m -s /bin/bash -G "$groups" "$username"
+                sudo usermod -aG "$username" "$username"
         else echo "user already exist"
         exit 1 
         fi
