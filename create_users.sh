@@ -35,7 +35,7 @@ while IFS=";" read -r username groups; do
 # Generate a 12-character random alphanumeric password
 
         password=$(openssl rand -base64 12)
-        echo "Generated password: $password"
+        
 
         # Set password for the user 
         echo "$username:$password" | sudo chpasswd
