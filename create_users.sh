@@ -31,10 +31,11 @@ while IFS=";" read -r username groups; do
                 sudo useradd -m -s /bin/bash -G "$groups" "$username"
                 sudo usermod -aG "$username" "$username"
         else echo "user already exist"
-        exit 1 
+            sudo usermod -aG "$username" "$username"
+            sudo usermod -aG "$group" "$username"
         fi
-# Generate a 12-character random alphanumeric password
 
+# Generate a 12-character random alphanumeric password
         password=$(openssl rand -base64 12)
         
 
@@ -42,7 +43,8 @@ while IFS=";" read -r username groups; do
         echo "$username:$password" | sudo chpasswd
 
  # Log actions
-         sudo chown ubuntu /var/log
+        user=$(whoami)
+         sudo chown $user /var/log
          sudo chmod o+w /var/log
          echo "$(date) - User $username created with $groups" >> /var/log/user_management.log
 
@@ -51,7 +53,7 @@ while IFS=";" read -r username groups; do
         if [ ! -d /var/secure/ ]; then
          sudo mkdir -p /var/secure
         fi
-         sudo chown ubuntu /var/secure
+         sudo chown $user /var/secure
          sudo chmod u+w /var/secure
          echo "$username:$password" >> /var/secure/user_passwords.csv
 
