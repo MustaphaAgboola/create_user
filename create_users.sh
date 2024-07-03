@@ -26,7 +26,7 @@ while IFS=";" read -r username groups; do
         fi
     done
 
-# Check if user exist, then create group
+# Check if user exist, then create user
         if ! grep -q "^$username:" /etc/passwd; then
                 sudo useradd -m -s /bin/bash -G "$groups" "$username"
                 sudo usermod -aG "$username" "$username"
@@ -40,11 +40,19 @@ while IFS=";" read -r username groups; do
 
         # Set password for the user 
         echo "$username:$password" | sudo chpasswd
+
  # Log actions
+         sudo chown ubuntu /var/log
          sudo chmod o+w /var/log
          echo "$(date) - User $username created with $groups" >> /var/log/user_management.log
+
 # Securely store passwords
-         sudo chmod o+w /var/secure
+
+        if [ ! -d /var/secure/ ]; then
+         sudo mkdir -p /var/secure
+        fi
+         sudo chown ubuntu /var/secure
+         sudo chmod u+w /var/secure
          echo "$username:$password" >> /var/secure/user_passwords.csv
 
 # Set permission for home directory
